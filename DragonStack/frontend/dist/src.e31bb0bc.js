@@ -21823,7 +21823,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DRAGON = exports.GENERATION = void 0;
+exports.ACCOUNT = exports.DRAGON = exports.GENERATION = void 0;
 var GENERATION = {
   FETCH: 'GENERATION_FETCH',
   FETCH_ERROR: 'GENERATION_FETCH_ERROR',
@@ -21836,59 +21836,15 @@ var DRAGON = {
   FETCH_SUCCESS: 'DRAGON_FETCH_SUCCESS'
 };
 exports.DRAGON = DRAGON;
-},{}],"config.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BACKEND = void 0;
-var BACKEND = {
-  ADDRESS: 'http://localhost:3000'
+var ACCOUNT = {
+  FETCH: 'ACCOUNT_FETCH',
+  FETCH_ERROR: 'ACCOUNT_FETCH_ERROR',
+  FETCH_SUCCESS: 'ACCOUNT_FETCH_SUCCESS',
+  FETCH_LOGOUT_SUCCESS: 'ACCOUNT_FETCH_LOGOUT_SUCCESS',
+  FETCH_AUTHENTICATED_SUCCESS: 'ACCOUNT_FETCH_AUTHENTICATED_SUCCESS'
 };
-exports.BACKEND = BACKEND;
-},{}],"actions/generation.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.fetchGeneration = void 0;
-
-var _types = require("./types");
-
-var _config = require("../config");
-
-var fetchGeneration = function fetchGeneration() {
-  return function (dispatch) {
-    dispatch({
-      type: _types.GENERATION.FETCH
-    });
-    return fetch("".concat(_config.BACKEND.ADDRESS, "/generation")).then(function (response) {
-      return response.json();
-    }).then(function (json) {
-      if (json.type === 'error') {
-        dispatch({
-          type: _types.GENERATION.FETCH_ERROR,
-          message: json.message
-        });
-      } else {
-        dispatch({
-          type: _types.GENERATION.FETCH_SUCCESS,
-          generation: json.generation
-        });
-      }
-    }).catch(function (error) {
-      return dispatch({
-        type: _types.GENERATION.FETCH_ERROR,
-        message: error.message
-      });
-    });
-  };
-};
-
-exports.fetchGeneration = fetchGeneration;
-},{"./types":"actions/types.js","../config":"config.js"}],"reducers/fetchStates.js":[function(require,module,exports) {
+exports.ACCOUNT = ACCOUNT;
+},{}],"reducers/fetchStates.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21901,7 +21857,7 @@ var _default = {
   success: 'success'
 };
 exports.default = _default;
-},{}],"components/Generation.js":[function(require,module,exports) {
+},{}],"reducers/generation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21909,112 +21865,189 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _types = require("../actions/types");
 
-var _reactRedux = require("react-redux");
+var _fetchStates = _interopRequireDefault(require("./fetchStates"));
 
-var _generation = require("../actions/generation");
-
-var _fetchStates = _interopRequireDefault(require("../reducers/fetchStates"));
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var MINIMUM_DELAY = 3000;
-
-var Generation =
-/*#__PURE__*/
-function (_Component) {
-  _inherits(Generation, _Component);
-
-  function Generation() {
-    var _getPrototypeOf2;
-
-    var _this;
-
-    var _temp;
-
-    _classCallCheck(this, Generation);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _possibleConstructorReturn(_this, (_temp = _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Generation)).call.apply(_getPrototypeOf2, [this].concat(args))), _this.timer = null, _this.fetchNextGeneration = function () {
-      _this.props.fetchGeneration();
-
-      var delay = new Date(_this.props.generation.expiration).getTime() - new Date().getTime();
-
-      if (delay < MINIMUM_DELAY) {
-        delay = MINIMUM_DELAY;
-      }
-
-      _this.timer = setTimeout(function () {
-        return _this.fetchNextGeneration();
-      }, delay);
-    }, _temp));
-  }
-
-  _createClass(Generation, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.fetchNextGeneration();
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      clearTimeout(this.timer);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var generation = this.props.generation;
-
-      if (generation.status === _fetchStates.default.error) {
-        return _react.default.createElement("div", null, generation.message);
-      }
-
-      return _react.default.createElement("div", null, _react.default.createElement("h3", null, "Generation ", generation.generationId, ". Expires on:"), _react.default.createElement("h4", null, new Date(generation.expiration).toString()));
-    }
-  }]);
-
-  return Generation;
-}(_react.Component);
-
-var mapStateToProps = function mapStateToProps(state) {
-  var generation = state.generation;
-  return {
-    generation: generation
-  };
+var DEFAULT_GENERATION = {
+  generationId: '',
+  expiration: ''
 };
 
-var componentConnector = (0, _reactRedux.connect)(mapStateToProps, {
-  fetchGeneration: _generation.fetchGeneration
+var generationReducer = function generationReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_GENERATION;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _types.GENERATION.FETCH:
+      return _extends({}, state, {
+        status: _fetchStates.default.fetching
+      });
+
+    case _types.GENERATION.FETCH_ERROR:
+      return _extends({}, state, {
+        status: _fetchStates.default.error,
+        message: action.message
+      });
+
+    case _types.GENERATION.FETCH_SUCCESS:
+      return _extends({}, state, {
+        status: _fetchStates.default.success
+      }, action.generation);
+
+    default:
+      return state;
+  }
+};
+
+var _default = generationReducer;
+exports.default = _default;
+},{"../actions/types":"actions/types.js","./fetchStates":"reducers/fetchStates.js"}],"reducers/dragon.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _types = require("../actions/types");
+
+var _fetchStates = _interopRequireDefault(require("./fetchStates"));
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var DEFAULT_DRAGON = {
+  generationId: '',
+  dragonId: '',
+  nickname: '',
+  birthdate: '',
+  traits: []
+};
+
+var dragonReducer = function dragonReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_DRAGON;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _types.DRAGON.FETCH:
+      return _extends({}, state, {
+        status: _fetchStates.default.fetching
+      });
+
+    case _types.DRAGON.FETCH_ERROR:
+      return _extends({}, state, {
+        status: _fetchStates.default.error,
+        message: action.message
+      });
+
+    case _types.DRAGON.FETCH_SUCCESS:
+      return _extends({}, state, {
+        status: _fetchStates.default.success
+      }, action.dragon);
+
+    default:
+      return state;
+  }
+};
+
+var _default = dragonReducer;
+exports.default = _default;
+},{"../actions/types":"actions/types.js","./fetchStates":"reducers/fetchStates.js"}],"reducers/account.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _types = require("../actions/types");
+
+var _fetchStates = _interopRequireDefault(require("./fetchStates"));
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var DEFAULT_ACCOUNT = {
+  loggedIn: false
+};
+
+var account = function account() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_ACCOUNT;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _types.ACCOUNT.FETCH:
+      return _extends({}, state, {
+        status: _fetchStates.default.fetching
+      });
+
+    case _types.ACCOUNT.FETCH_ERROR:
+      return _extends({}, state, {
+        status: _fetchStates.default.error,
+        message: action.message
+      });
+
+    case _types.ACCOUNT.FETCH_SUCCESS:
+      return _extends({}, state, {
+        status: _fetchStates.default.success,
+        message: action.message,
+        loggedIn: true
+      });
+
+    case _types.ACCOUNT.FETCH_LOGOUT_SUCCESS:
+      return _extends({}, state, {
+        status: _fetchStates.default.success,
+        message: action.message,
+        loggedIn: false
+      });
+
+    case _types.ACCOUNT.FETCH_AUTHENTICATED_SUCCESS:
+      return _extends({}, state, {
+        status: _fetchStates.default.success,
+        message: action.message,
+        loggedIn: action.authenticated
+      });
+
+    default:
+      return state;
+  }
+};
+
+var _default = account;
+exports.default = _default;
+},{"../actions/types":"actions/types.js","./fetchStates":"reducers/fetchStates.js"}],"reducers/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _redux = require("redux");
+
+var _generation = _interopRequireDefault(require("./generation"));
+
+var _dragon = _interopRequireDefault(require("./dragon"));
+
+var _account = _interopRequireDefault(require("./account"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = (0, _redux.combineReducers)({
+  account: _account.default,
+  dragon: _dragon.default,
+  generation: _generation.default
 });
 
-var _default = componentConnector(Generation);
-
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","../actions/generation":"actions/generation.js","../reducers/fetchStates":"reducers/fetchStates.js"}],"../node_modules/babel-runtime/node_modules/core-js/library/modules/_global.js":[function(require,module,exports) {
+},{"redux":"../node_modules/redux/es/redux.js","./generation":"reducers/generation.js","./dragon":"reducers/dragon.js","./account":"reducers/account.js"}],"../node_modules/babel-runtime/node_modules/core-js/library/modules/_global.js":[function(require,module,exports) {
 
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
@@ -40506,7 +40539,172 @@ exports.utils = _utils;
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./Accordion":"../node_modules/react-bootstrap/es/Accordion.js","./Alert":"../node_modules/react-bootstrap/es/Alert.js","./Badge":"../node_modules/react-bootstrap/es/Badge.js","./Breadcrumb":"../node_modules/react-bootstrap/es/Breadcrumb.js","./BreadcrumbItem":"../node_modules/react-bootstrap/es/BreadcrumbItem.js","./Button":"../node_modules/react-bootstrap/es/Button.js","./ButtonGroup":"../node_modules/react-bootstrap/es/ButtonGroup.js","./ButtonToolbar":"../node_modules/react-bootstrap/es/ButtonToolbar.js","./Carousel":"../node_modules/react-bootstrap/es/Carousel.js","./CarouselItem":"../node_modules/react-bootstrap/es/CarouselItem.js","./Checkbox":"../node_modules/react-bootstrap/es/Checkbox.js","./Clearfix":"../node_modules/react-bootstrap/es/Clearfix.js","./CloseButton":"../node_modules/react-bootstrap/es/CloseButton.js","./ControlLabel":"../node_modules/react-bootstrap/es/ControlLabel.js","./Col":"../node_modules/react-bootstrap/es/Col.js","./Collapse":"../node_modules/react-bootstrap/es/Collapse.js","./Dropdown":"../node_modules/react-bootstrap/es/Dropdown.js","./DropdownButton":"../node_modules/react-bootstrap/es/DropdownButton.js","./Fade":"../node_modules/react-bootstrap/es/Fade.js","./Form":"../node_modules/react-bootstrap/es/Form.js","./FormControl":"../node_modules/react-bootstrap/es/FormControl.js","./FormGroup":"../node_modules/react-bootstrap/es/FormGroup.js","./Glyphicon":"../node_modules/react-bootstrap/es/Glyphicon.js","./Grid":"../node_modules/react-bootstrap/es/Grid.js","./HelpBlock":"../node_modules/react-bootstrap/es/HelpBlock.js","./Image":"../node_modules/react-bootstrap/es/Image.js","./InputGroup":"../node_modules/react-bootstrap/es/InputGroup.js","./Jumbotron":"../node_modules/react-bootstrap/es/Jumbotron.js","./Label":"../node_modules/react-bootstrap/es/Label.js","./ListGroup":"../node_modules/react-bootstrap/es/ListGroup.js","./ListGroupItem":"../node_modules/react-bootstrap/es/ListGroupItem.js","./Media":"../node_modules/react-bootstrap/es/Media.js","./MenuItem":"../node_modules/react-bootstrap/es/MenuItem.js","./Modal":"../node_modules/react-bootstrap/es/Modal.js","./ModalBody":"../node_modules/react-bootstrap/es/ModalBody.js","./ModalFooter":"../node_modules/react-bootstrap/es/ModalFooter.js","./ModalHeader":"../node_modules/react-bootstrap/es/ModalHeader.js","./ModalTitle":"../node_modules/react-bootstrap/es/ModalTitle.js","./Nav":"../node_modules/react-bootstrap/es/Nav.js","./Navbar":"../node_modules/react-bootstrap/es/Navbar.js","./NavbarBrand":"../node_modules/react-bootstrap/es/NavbarBrand.js","./NavDropdown":"../node_modules/react-bootstrap/es/NavDropdown.js","./NavItem":"../node_modules/react-bootstrap/es/NavItem.js","./Overlay":"../node_modules/react-bootstrap/es/Overlay.js","./OverlayTrigger":"../node_modules/react-bootstrap/es/OverlayTrigger.js","./PageHeader":"../node_modules/react-bootstrap/es/PageHeader.js","./PageItem":"../node_modules/react-bootstrap/es/PageItem.js","./Pager":"../node_modules/react-bootstrap/es/Pager.js","./Pagination":"../node_modules/react-bootstrap/es/Pagination.js","./Panel":"../node_modules/react-bootstrap/es/Panel.js","./PanelGroup":"../node_modules/react-bootstrap/es/PanelGroup.js","./Popover":"../node_modules/react-bootstrap/es/Popover.js","./ProgressBar":"../node_modules/react-bootstrap/es/ProgressBar.js","./Radio":"../node_modules/react-bootstrap/es/Radio.js","./ResponsiveEmbed":"../node_modules/react-bootstrap/es/ResponsiveEmbed.js","./Row":"../node_modules/react-bootstrap/es/Row.js","./SafeAnchor":"../node_modules/react-bootstrap/es/SafeAnchor.js","./SplitButton":"../node_modules/react-bootstrap/es/SplitButton.js","./Tab":"../node_modules/react-bootstrap/es/Tab.js","./TabContainer":"../node_modules/react-bootstrap/es/TabContainer.js","./TabContent":"../node_modules/react-bootstrap/es/TabContent.js","./Table":"../node_modules/react-bootstrap/es/Table.js","./TabPane":"../node_modules/react-bootstrap/es/TabPane.js","./Tabs":"../node_modules/react-bootstrap/es/Tabs.js","./Thumbnail":"../node_modules/react-bootstrap/es/Thumbnail.js","./ToggleButton":"../node_modules/react-bootstrap/es/ToggleButton.js","./ToggleButtonGroup":"../node_modules/react-bootstrap/es/ToggleButtonGroup.js","./Tooltip":"../node_modules/react-bootstrap/es/Tooltip.js","./Well":"../node_modules/react-bootstrap/es/Well.js","./utils":"../node_modules/react-bootstrap/es/utils/index.js"}],"assets/skinny.png":[function(require,module,exports) {
+},{"./Accordion":"../node_modules/react-bootstrap/es/Accordion.js","./Alert":"../node_modules/react-bootstrap/es/Alert.js","./Badge":"../node_modules/react-bootstrap/es/Badge.js","./Breadcrumb":"../node_modules/react-bootstrap/es/Breadcrumb.js","./BreadcrumbItem":"../node_modules/react-bootstrap/es/BreadcrumbItem.js","./Button":"../node_modules/react-bootstrap/es/Button.js","./ButtonGroup":"../node_modules/react-bootstrap/es/ButtonGroup.js","./ButtonToolbar":"../node_modules/react-bootstrap/es/ButtonToolbar.js","./Carousel":"../node_modules/react-bootstrap/es/Carousel.js","./CarouselItem":"../node_modules/react-bootstrap/es/CarouselItem.js","./Checkbox":"../node_modules/react-bootstrap/es/Checkbox.js","./Clearfix":"../node_modules/react-bootstrap/es/Clearfix.js","./CloseButton":"../node_modules/react-bootstrap/es/CloseButton.js","./ControlLabel":"../node_modules/react-bootstrap/es/ControlLabel.js","./Col":"../node_modules/react-bootstrap/es/Col.js","./Collapse":"../node_modules/react-bootstrap/es/Collapse.js","./Dropdown":"../node_modules/react-bootstrap/es/Dropdown.js","./DropdownButton":"../node_modules/react-bootstrap/es/DropdownButton.js","./Fade":"../node_modules/react-bootstrap/es/Fade.js","./Form":"../node_modules/react-bootstrap/es/Form.js","./FormControl":"../node_modules/react-bootstrap/es/FormControl.js","./FormGroup":"../node_modules/react-bootstrap/es/FormGroup.js","./Glyphicon":"../node_modules/react-bootstrap/es/Glyphicon.js","./Grid":"../node_modules/react-bootstrap/es/Grid.js","./HelpBlock":"../node_modules/react-bootstrap/es/HelpBlock.js","./Image":"../node_modules/react-bootstrap/es/Image.js","./InputGroup":"../node_modules/react-bootstrap/es/InputGroup.js","./Jumbotron":"../node_modules/react-bootstrap/es/Jumbotron.js","./Label":"../node_modules/react-bootstrap/es/Label.js","./ListGroup":"../node_modules/react-bootstrap/es/ListGroup.js","./ListGroupItem":"../node_modules/react-bootstrap/es/ListGroupItem.js","./Media":"../node_modules/react-bootstrap/es/Media.js","./MenuItem":"../node_modules/react-bootstrap/es/MenuItem.js","./Modal":"../node_modules/react-bootstrap/es/Modal.js","./ModalBody":"../node_modules/react-bootstrap/es/ModalBody.js","./ModalFooter":"../node_modules/react-bootstrap/es/ModalFooter.js","./ModalHeader":"../node_modules/react-bootstrap/es/ModalHeader.js","./ModalTitle":"../node_modules/react-bootstrap/es/ModalTitle.js","./Nav":"../node_modules/react-bootstrap/es/Nav.js","./Navbar":"../node_modules/react-bootstrap/es/Navbar.js","./NavbarBrand":"../node_modules/react-bootstrap/es/NavbarBrand.js","./NavDropdown":"../node_modules/react-bootstrap/es/NavDropdown.js","./NavItem":"../node_modules/react-bootstrap/es/NavItem.js","./Overlay":"../node_modules/react-bootstrap/es/Overlay.js","./OverlayTrigger":"../node_modules/react-bootstrap/es/OverlayTrigger.js","./PageHeader":"../node_modules/react-bootstrap/es/PageHeader.js","./PageItem":"../node_modules/react-bootstrap/es/PageItem.js","./Pager":"../node_modules/react-bootstrap/es/Pager.js","./Pagination":"../node_modules/react-bootstrap/es/Pagination.js","./Panel":"../node_modules/react-bootstrap/es/Panel.js","./PanelGroup":"../node_modules/react-bootstrap/es/PanelGroup.js","./Popover":"../node_modules/react-bootstrap/es/Popover.js","./ProgressBar":"../node_modules/react-bootstrap/es/ProgressBar.js","./Radio":"../node_modules/react-bootstrap/es/Radio.js","./ResponsiveEmbed":"../node_modules/react-bootstrap/es/ResponsiveEmbed.js","./Row":"../node_modules/react-bootstrap/es/Row.js","./SafeAnchor":"../node_modules/react-bootstrap/es/SafeAnchor.js","./SplitButton":"../node_modules/react-bootstrap/es/SplitButton.js","./Tab":"../node_modules/react-bootstrap/es/Tab.js","./TabContainer":"../node_modules/react-bootstrap/es/TabContainer.js","./TabContent":"../node_modules/react-bootstrap/es/TabContent.js","./Table":"../node_modules/react-bootstrap/es/Table.js","./TabPane":"../node_modules/react-bootstrap/es/TabPane.js","./Tabs":"../node_modules/react-bootstrap/es/Tabs.js","./Thumbnail":"../node_modules/react-bootstrap/es/Thumbnail.js","./ToggleButton":"../node_modules/react-bootstrap/es/ToggleButton.js","./ToggleButtonGroup":"../node_modules/react-bootstrap/es/ToggleButtonGroup.js","./Tooltip":"../node_modules/react-bootstrap/es/Tooltip.js","./Well":"../node_modules/react-bootstrap/es/Well.js","./utils":"../node_modules/react-bootstrap/es/utils/index.js"}],"config.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BACKEND = void 0;
+var BACKEND = {
+  ADDRESS: 'http://localhost:3000'
+};
+exports.BACKEND = BACKEND;
+},{}],"actions/generation.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fetchGeneration = void 0;
+
+var _types = require("./types");
+
+var _config = require("../config");
+
+var fetchGeneration = function fetchGeneration() {
+  return function (dispatch) {
+    dispatch({
+      type: _types.GENERATION.FETCH
+    });
+    return fetch("".concat(_config.BACKEND.ADDRESS, "/generation")).then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      if (json.type === 'error') {
+        dispatch({
+          type: _types.GENERATION.FETCH_ERROR,
+          message: json.message
+        });
+      } else {
+        dispatch({
+          type: _types.GENERATION.FETCH_SUCCESS,
+          generation: json.generation
+        });
+      }
+    }).catch(function (error) {
+      return dispatch({
+        type: _types.GENERATION.FETCH_ERROR,
+        message: error.message
+      });
+    });
+  };
+};
+
+exports.fetchGeneration = fetchGeneration;
+},{"./types":"actions/types.js","../config":"config.js"}],"components/Generation.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _reactRedux = require("react-redux");
+
+var _generation = require("../actions/generation");
+
+var _fetchStates = _interopRequireDefault(require("../reducers/fetchStates"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var MINIMUM_DELAY = 3000;
+
+var Generation =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Generation, _Component);
+
+  function Generation() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    var _temp;
+
+    _classCallCheck(this, Generation);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _possibleConstructorReturn(_this, (_temp = _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Generation)).call.apply(_getPrototypeOf2, [this].concat(args))), _this.timer = null, _this.fetchNextGeneration = function () {
+      _this.props.fetchGeneration();
+
+      var delay = new Date(_this.props.generation.expiration).getTime() - new Date().getTime();
+
+      if (delay < MINIMUM_DELAY) {
+        delay = MINIMUM_DELAY;
+      }
+
+      _this.timer = setTimeout(function () {
+        return _this.fetchNextGeneration();
+      }, delay);
+    }, _temp));
+  }
+
+  _createClass(Generation, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.fetchNextGeneration();
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      clearTimeout(this.timer);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var generation = this.props.generation;
+
+      if (generation.status === _fetchStates.default.error) {
+        return _react.default.createElement("div", null, generation.message);
+      }
+
+      return _react.default.createElement("div", null, _react.default.createElement("h3", null, "Generation ", generation.generationId, ". Expires on:"), _react.default.createElement("h4", null, new Date(generation.expiration).toString()));
+    }
+  }]);
+
+  return Generation;
+}(_react.Component);
+
+var mapStateToProps = function mapStateToProps(state) {
+  var generation = state.generation;
+  return {
+    generation: generation
+  };
+};
+
+var componentConnector = (0, _reactRedux.connect)(mapStateToProps, {
+  fetchGeneration: _generation.fetchGeneration
+});
+
+var _default = componentConnector(Generation);
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","../actions/generation":"actions/generation.js","../reducers/fetchStates":"reducers/fetchStates.js"}],"assets/skinny.png":[function(require,module,exports) {
 module.exports = "/..\skinny.49e804a3.png";
 },{}],"assets/slender.png":[function(require,module,exports) {
 module.exports = "/..\slender.a4ff3b5b.png";
@@ -40835,56 +41033,118 @@ var _default = (0, _reactRedux.connect)(function (_ref) {
 })(Dragon);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-bootstrap":"../node_modules/react-bootstrap/es/index.js","./DragonAvatar":"components/DragonAvatar.js","../actions/dragon":"actions/dragon.js"}],"reducers/generation.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-bootstrap":"../node_modules/react-bootstrap/es/index.js","./DragonAvatar":"components/DragonAvatar.js","../actions/dragon":"actions/dragon.js"}],"actions/account.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.fetchdAuthenicated = exports.logout = exports.login = exports.signup = void 0;
 
-var _types = require("../actions/types");
+var _types = require("./types");
 
-var _fetchStates = _interopRequireDefault(require("./fetchStates"));
+var _config = require("../config");
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var DEFAULT_GENERATION = {
-  generationId: '',
-  expiration: ''
+var fetchFromAccount = function fetchFromAccount(_ref) {
+  var endpoint = _ref.endpoint,
+      options = _ref.options,
+      SUCCESS_TYPE = _ref.SUCCESS_TYPE;
+  return function (dispatch) {
+    dispatch({
+      type: _types.ACCOUNT.FETCH
+    });
+    return fetch("".concat(_config.BACKEND.ADDRESS, "/account/").concat(endpoint), options).then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      if (json.type === 'error') {
+        dispatch({
+          type: _types.ACCOUNT.FETCH_ERROR,
+          message: json.message
+        });
+      } else {
+        dispatch(_extends({
+          type: SUCCESS_TYPE
+        }, json));
+      }
+    }).catch(function (error) {
+      return dispatch({
+        type: _types.ACCOUNT.FETCH_ERROR,
+        message: error.message
+      });
+    });
+  };
 };
 
-var generationReducer = function generationReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_GENERATION;
-  var action = arguments.length > 1 ? arguments[1] : undefined;
-
-  switch (action.type) {
-    case _types.GENERATION.FETCH:
-      return _extends({}, state, {
-        status: _fetchStates.default.fetching
-      });
-
-    case _types.GENERATION.FETCH_ERROR:
-      return _extends({}, state, {
-        status: _fetchStates.default.error,
-        message: action.message
-      });
-
-    case _types.GENERATION.FETCH_SUCCESS:
-      return _extends({}, state, {
-        status: _fetchStates.default.success
-      }, action.generation);
-
-    default:
-      return state;
-  }
+var signup = function signup(_ref2) {
+  var username = _ref2.username,
+      password = _ref2.password;
+  return fetchFromAccount({
+    endpoint: 'signup',
+    options: {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        password: password
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    },
+    SUCCESS_TYPE: _types.ACCOUNT.FETCH_SUCCESS
+  });
 };
 
-var _default = generationReducer;
-exports.default = _default;
-},{"../actions/types":"actions/types.js","./fetchStates":"reducers/fetchStates.js"}],"reducers/dragon.js":[function(require,module,exports) {
+exports.signup = signup;
+
+var login = function login(_ref3) {
+  var username = _ref3.username,
+      password = _ref3.password;
+  return fetchFromAccount({
+    endpoint: 'login',
+    options: {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        password: password
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    },
+    SUCCESS_TYPE: _types.ACCOUNT.FETCH_SUCCESS
+  });
+};
+
+exports.login = login;
+
+var logout = function logout() {
+  return fetchFromAccount({
+    endpoint: 'logout',
+    options: {
+      credentials: 'include'
+    },
+    SUCCESS_TYPE: _types.ACCOUNT.FETCH_LOGOUT_SUCCESS
+  });
+};
+
+exports.logout = logout;
+
+var fetchdAuthenicated = function fetchdAuthenicated() {
+  return fetchFromAccount({
+    endpoint: 'authenticated',
+    options: {
+      credentials: 'include'
+    },
+    SUCCESS_TYPE: _types.ACCOUNT.FETCH_AUTHENTICATED_SUCCESS
+  });
+};
+
+exports.fetchdAuthenicated = fetchdAuthenicated;
+},{"./types":"actions/types.js","../config":"config.js"}],"components/Home.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40892,51 +41152,70 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _types = require("../actions/types");
+var _react = _interopRequireWildcard(require("react"));
 
-var _fetchStates = _interopRequireDefault(require("./fetchStates"));
+var _reactRedux = require("react-redux");
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _reactBootstrap = require("react-bootstrap");
+
+var _Generation = _interopRequireDefault(require("./Generation"));
+
+var _Dragon = _interopRequireDefault(require("./Dragon"));
+
+var _account = require("../actions/account");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DEFAULT_DRAGON = {
-  generationId: '',
-  dragonId: '',
-  nickname: '',
-  birthdate: '',
-  traits: []
-};
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-var dragonReducer = function dragonReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : DEFAULT_DRAGON;
-  var action = arguments.length > 1 ? arguments[1] : undefined;
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-  switch (action.type) {
-    case _types.DRAGON.FETCH:
-      return _extends({}, state, {
-        status: _fetchStates.default.fetching
-      });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    case _types.DRAGON.FETCH_ERROR:
-      return _extends({}, state, {
-        status: _fetchStates.default.error,
-        message: action.message
-      });
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-    case _types.DRAGON.FETCH_SUCCESS:
-      return _extends({}, state, {
-        status: _fetchStates.default.success
-      }, action.dragon);
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-    default:
-      return state;
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Home =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Home, _Component);
+
+  function Home() {
+    _classCallCheck(this, Home);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Home).apply(this, arguments));
   }
-};
 
-var _default = dragonReducer;
+  _createClass(Home, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("div", null, _react.default.createElement(_reactBootstrap.Button, {
+        onClick: this.props.logout,
+        className: "logout-button"
+      }, "Log Out"), _react.default.createElement("h2", null, "Dragon Stack"), _react.default.createElement(_Generation.default, null), _react.default.createElement(_Dragon.default, null));
+    }
+  }]);
+
+  return Home;
+}(_react.Component);
+
+var _default = (0, _reactRedux.connect)(null, {
+  logout: _account.logout
+})(Home);
+
 exports.default = _default;
-},{"../actions/types":"actions/types.js","./fetchStates":"reducers/fetchStates.js"}],"reducers/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-bootstrap":"../node_modules/react-bootstrap/es/index.js","./Generation":"components/Generation.js","./Dragon":"components/Dragon.js","../actions/account":"actions/account.js"}],"components/AuthForm.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40944,21 +41223,209 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _generation = _interopRequireDefault(require("./generation"));
+var _react = _interopRequireWildcard(require("react"));
 
-var _dragon = _interopRequireDefault(require("./dragon"));
+var _reactRedux = require("react-redux");
 
-var _redux = require("redux");
+var _reactBootstrap = require("react-bootstrap");
+
+var _account = require("../actions/account");
+
+var _fetchStates = _interopRequireDefault(require("../reducers/fetchStates"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _default = (0, _redux.combineReducers)({
-  generation: _generation.default,
-  dragon: _dragon.default
-});
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var AuthForm =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(AuthForm, _Component);
+
+  function AuthForm() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    var _temp;
+
+    _classCallCheck(this, AuthForm);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _possibleConstructorReturn(_this, (_temp = _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(AuthForm)).call.apply(_getPrototypeOf2, [this].concat(args))), _this.state = {
+      username: '',
+      password: '',
+      buttonClicked: false
+    }, _this.updateUsername = function (event) {
+      _this.setState({
+        username: event.target.value
+      });
+    }, _this.updatePassword = function (event) {
+      _this.setState({
+        password: event.target.value
+      });
+    }, _this.signup = function () {
+      _this.setState({
+        buttonClicked: true
+      });
+
+      var _this$state = _this.state,
+          username = _this$state.username,
+          password = _this$state.password;
+
+      _this.props.signup({
+        username: username,
+        password: password
+      });
+    }, _this.login = function () {
+      _this.setState({
+        buttonClicked: true
+      });
+
+      var _this$state2 = _this.state,
+          username = _this$state2.username,
+          password = _this$state2.password;
+
+      _this.props.login({
+        username: username,
+        password: password
+      });
+    }, _temp));
+  }
+
+  _createClass(AuthForm, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("div", null, _react.default.createElement("h2", null, "Dragon Stack"), _react.default.createElement(_reactBootstrap.FormGroup, null, _react.default.createElement(_reactBootstrap.FormControl, {
+        type: "text",
+        value: this.state.username,
+        placeholder: "username",
+        onChange: this.updateUsername
+      })), _react.default.createElement(_reactBootstrap.FormGroup, null, _react.default.createElement(_reactBootstrap.FormControl, {
+        type: "password",
+        value: this.state.password,
+        placeholder: "password",
+        onChange: this.updatePassword
+      })), _react.default.createElement("div", null, _react.default.createElement(_reactBootstrap.Button, {
+        onClick: this.login
+      }, "Log In"), _react.default.createElement("span", null, " or "), _react.default.createElement(_reactBootstrap.Button, {
+        onClick: this.signup
+      }, "Sign Up")), _react.default.createElement("br", null), this.Error);
+    }
+  }, {
+    key: "Error",
+    get: function get() {
+      if (this.state.buttonClicked && this.props.account.status === _fetchStates.default.error) {
+        return _react.default.createElement("div", null, this.props.account.message);
+      }
+    }
+  }]);
+
+  return AuthForm;
+}(_react.Component);
+
+var _default = (0, _reactRedux.connect)(function (_ref) {
+  var account = _ref.account;
+  return {
+    account: account
+  };
+}, {
+  signup: _account.signup,
+  login: _account.login
+})(AuthForm);
 
 exports.default = _default;
-},{"./generation":"reducers/generation.js","./dragon":"reducers/dragon.js","redux":"../node_modules/redux/es/redux.js"}],"c:/nvm/v10.3.0/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-bootstrap":"../node_modules/react-bootstrap/es/index.js","../actions/account":"actions/account.js","../reducers/fetchStates":"reducers/fetchStates.js"}],"components/Root.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _reactRedux = require("react-redux");
+
+var _Home = _interopRequireDefault(require("./Home"));
+
+var _AuthForm = _interopRequireDefault(require("./AuthForm"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Root =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Root, _Component);
+
+  function Root() {
+    _classCallCheck(this, Root);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Root).apply(this, arguments));
+  }
+
+  _createClass(Root, [{
+    key: "render",
+    value: function render() {
+      return this.props.account.loggedIn ? _react.default.createElement(_Home.default, null) : _react.default.createElement(_AuthForm.default, null);
+    }
+  }]);
+
+  return Root;
+}(_react.Component);
+
+;
+
+var _default = (0, _reactRedux.connect)(function (_ref) {
+  var account = _ref.account;
+  return {
+    account: account
+  };
+}, null)(Root);
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","./Home":"components/Home.js","./AuthForm":"components/AuthForm.js"}],"c:/nvm/v10.3.0/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -41043,21 +41510,23 @@ var _reactDom = require("react-dom");
 
 var _reduxThunk = _interopRequireDefault(require("redux-thunk"));
 
-var _Generation = _interopRequireDefault(require("./components/Generation"));
-
-var _Dragon = _interopRequireDefault(require("./components/Dragon"));
-
 var _reducers = _interopRequireDefault(require("./reducers"));
+
+var _Root = _interopRequireDefault(require("./components/Root"));
+
+var _account = require("./actions/account");
 
 require("./index.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var store = (0, _redux.createStore)(_reducers.default, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), (0, _redux.applyMiddleware)(_reduxThunk.default));
-(0, _reactDom.render)(_react.default.createElement(_reactRedux.Provider, {
-  store: store
-}, _react.default.createElement("div", null, _react.default.createElement("h2", null, "Dragon Stack"), _react.default.createElement(_Generation.default, null), _react.default.createElement(_Dragon.default, null))), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-dom":"../node_modules/react-dom/index.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","./components/Generation":"components/Generation.js","./components/Dragon":"components/Dragon.js","./reducers":"reducers/index.js","./index.css":"index.css"}],"c:/nvm/v10.3.0/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+store.dispatch((0, _account.fetchdAuthenicated)()).then(function () {
+  (0, _reactDom.render)(_react.default.createElement(_reactRedux.Provider, {
+    store: store
+  }, _react.default.createElement(_Root.default, null)), document.getElementById('root'));
+});
+},{"react":"../node_modules/react/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-dom":"../node_modules/react-dom/index.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","./reducers":"reducers/index.js","./components/Root":"components/Root.js","./actions/account":"actions/account.js","./index.css":"index.css"}],"c:/nvm/v10.3.0/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -41085,7 +41554,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60006" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49348" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
